@@ -267,10 +267,10 @@ class ZSpotifyApi:
             artist_id = info['tracks'][0]['artists'][0]['id']
             artists = []
             for data in info["tracks"][0]["artists"]:
-                artists.append(self.sanitize_data(data["name"]))
+                artists.append(data["name"])
             artist_name = artists
-            album_name = self.sanitize_data(info["tracks"][0]["album"]["name"])
-            song_name = self.sanitize_data(info["tracks"][0]["name"])
+            album_name = info["tracks"][0]["album"]["name"]
+            song_name = info["tracks"][0]["name"]
             image_url = info["tracks"][0]["album"]["images"][img_index]["url"] if img_index >= 0 else None
             release_year = info["tracks"][0]["album"]["release_date"].split("-")[0]
             disc_number = info["tracks"][0]["disc_number"]
