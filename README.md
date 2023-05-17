@@ -1,28 +1,35 @@
-# zspotify
+# ZSpotify
 
 [![Docker CI](https://github.com/jsavargas/zspotify/actions/workflows/docker-ci.yml/badge.svg)](https://github.com/jsavargas/zspotify/actions/workflows/docker-ci.yml)
 [![GPLv3](https://img.shields.io/github/license/jsavargas/zspotify)](https://opensource.org/license/gpl-3-0)
 
-zspotify is a Spotify downloader that enables users to find and download songs.
+ZSpotify is a Spotify downloader that enables users to find and download songs.
 
 
-## Requirements
+## Installation
 
-- Python 3.9 or greater
-- ffmpeg
-
-> :warning: ffmpeg should be installed from your package manager of choice on Linux or by
-downloading the binaries from [ffmpeg.org](https://ffmpeg.org) and placing them in your %PATH% in Windows.
+1. Install [requirements](#requirements)
+2. Install ZSpotify using either [pip](#pip) or [Docker](#docker)
 
 
-## Installation (pip)
+### Requirements
+
+- Python (3.10 or greater)
+  - [Python download (Windows)](https://www.python.org/downloads/)
+- FFmpeg
+  - [FFmpeg download (Windows)](https://ffmpeg.org/download.html)
+  - [FFmpeg installation guide (Windows)](https://www.wikihow.com/Install-FFmpeg-on-Windows)
+
+> :warning: To install Python and FFmpeg on **Linux**, use the preferred package manager for your distribution.
+
+### pip
 
 ```bash
 pip install git+https://github.com/jsavargas/zspotify
 ```
 
 
-## Installation (Docker)
+### Docker
 
 ```bash
 docker pull jsavargas/zspotify
@@ -45,6 +52,7 @@ positional arguments:
 
 options:
   -h, --help            show this help message and exit
+  -v, --version         Shows the current version of zspotify
   -ap, --all-playlists  Downloads all saved playlist from your library
   -sp, --select-playlists
                         Downloads a saved playlist from your library
@@ -70,7 +78,6 @@ options:
                         Folder to save the downloaded music files
   -pd EPISODES_DIR, --episodes-dir EPISODES_DIR
                         Folder to save the downloaded episodes files
-  -v, --version         Shows the current version of ZSpotify
   -af {mp3,ogg}, --audio-format {mp3,ogg}
                         Audio format to download the tracks
   --album-in-filename   Adds the album name to the filename
@@ -93,7 +100,12 @@ options:
 
 ## Changelog
 
-[View Changelog Here](https://github.com/jsavargas/zspotify/blob/master/CHANGELOG.md)
+[View changelog here](https://github.com/jsavargas/zspotify/blob/master/CHANGELOG.md)
+
+
+## Disclaimer
+
+We recommend using a burner account to avoid any possible account bans.
 
 
 ## Contributing
@@ -108,4 +120,4 @@ to discuss what you would like to change.
 
 ## Acknowledgements
 
-- [Footsiefat](https://github.com/Footsiefat) for original zspotify implementation
+- [Footsiefat](https://github.com/Footsiefat) for original ZSpotify implementation

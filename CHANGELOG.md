@@ -1,5 +1,14 @@
 # Changelog
 
+**v2.0.4 (18 May 2023)**
+- Uprev librespot-org and set minimum version
+
+**v2.0.3 (24 Apr 2023)**
+- show albums before download
+
+**v2.0.2 (30 Mar 2023)**
+- Refresh token on expiration / Screeper
+
 **v2.0.1 (30 Mar 2023)**
 - Refresh token on expiration / Screeper
 
@@ -54,7 +63,7 @@
 - Added Pillow to requirements.txt.
 - Removed websocket-client from requirements.txt because librespot-python added it to their dependency list.
 - Made it hide your password when you type it in.
-- Added manual override to force premium quality if zspotify cannot auto-detect it.
+- Added manual override to force premium quality if ZSpotify cannot auto-detect it.
 - Added option to just download the raw audio with no re-encoding at all.
 - Added Shebang line so it runs smoother on Linux.
 - Made it download the entire track at once now so it is more efficient and fixed a bug users encountered.
