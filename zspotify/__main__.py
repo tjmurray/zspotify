@@ -143,7 +143,7 @@ class ZSpotify:
         self.antiban_album_time = self.args.antiban_album
         self.not_skip_existing = self.args.not_skip_existing
         self.skip_downloaded = self.args.skip_downloaded
-        self.archive_file = self.args.config_dir / self.args.archive
+        self.archive_file = self.config_dir / self.args.archive
         self.archive = Archive(self.archive_file)
 
     def parse_args(self):
