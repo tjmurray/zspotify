@@ -267,6 +267,8 @@ class ZSpotify:
       ███   ███████ ██████  ██    ██    ██    ██ █████     ████
      ███         ██ ██      ██    ██    ██    ██ ██         ██
     ███████ ███████ ██       ██████     ██    ██ ██         ██
+
+    develop
         """
         )
         print(Style.RESET)
@@ -294,6 +296,7 @@ class ZSpotify:
                 "\rWait for Next Download in %d second(s)..." %
                 (i + 1), end="")
             time.sleep(1)
+        print("\n")
 
     def sanitize_data(self, value):
         """Returns given string with problematic removed"""
@@ -451,7 +454,7 @@ class ZSpotify:
     # DOWNLOADERS
 
     def generate_filename(self, caller, audio_name, audio_number, audio_format, artist_name, album_name, path=None):
-        def shorten_filename(filename, artist_name, audio_name, max_length=255):
+        def shorten_filename(filename, artist_name, audio_name, max_length=50):
             if len(filename) > max_length:
                 if len(artist_name) > (max_length // 2):
                     filename = filename.replace(artist_name, "Various Artists")
@@ -527,7 +530,10 @@ class ZSpotify:
             Thread(target=self.zs_api.download_audio,
                    args=(track_id, fullpath, True))
         downloader.start()
-
+    
+        _filename = filename[:50]
+        filename = _filename
+        print(f"filename: '{filename}' ")
         while not self.zs_api.progress:
             time.sleep(0.1)
         with tqdm(
@@ -750,6 +756,9 @@ class ZSpotify:
             Thread(target=self.zs_api.download_audio,
                    args=(episode_id, fullpath, True))
         downloader.start()
+
+        _filename = filename[:50]
+        filename = _filename
 
         while not self.zs_api.progress:
             time.sleep(0.1)

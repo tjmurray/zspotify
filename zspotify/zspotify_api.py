@@ -105,6 +105,9 @@ class ZSpotifyApi:
             raise RuntimeError(except_msg)
 
     def parse_url(self, search_input):
+        pattern = r'intl-[^/]+/'
+        search_input = re.sub(pattern, '', search_input)
+
         track_uri_search = re.search(
             r"^spotify:track:(?P<TrackID>[0-9a-zA-Z]{22})$", search_input
         )
