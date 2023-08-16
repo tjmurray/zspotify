@@ -270,6 +270,7 @@ class ZSpotifyApi:
             for data in info["tracks"][0]["artists"]:
                 artists.append(self.sanitize_data(data["name"]))
             artist_name = artists
+            album_artist = self.sanitize_data(info["tracks"][0]["album"]["artists"][0]['name'])
             album_name = self.sanitize_data(info["tracks"][0]["album"]["name"])
             song_name = self.sanitize_data(info["tracks"][0]["name"])
             image_url = info["tracks"][0]["album"]["images"][img_index]["url"] if img_index >= 0 else None
@@ -284,6 +285,7 @@ class ZSpotifyApi:
                 return {'id': track_id,
                         'artist_id': artist_id,
                         'artist_name': self.conv_artist_format(artist_name),
+                        'album_artist': album_artist,
                         'album_name': album_name,
                         'audio_name': song_name,
                         'image_url': image_url,
@@ -298,6 +300,7 @@ class ZSpotifyApi:
             return {'id': track_id,
                     'artist_id': artist_id,
                     'artist_name': self.conv_artist_format(artist_name),
+                    'album_artist': album_artist,
                     'album_name': album_name,
                     'audio_name': song_name,
                     'image_url': image_url,
