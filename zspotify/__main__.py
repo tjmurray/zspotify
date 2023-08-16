@@ -530,9 +530,6 @@ class ZSpotify:
                    args=(track_id, fullpath, True))
         downloader.start()
     
-        _filename = filename[:50]
-        filename = _filename
-        print(f"filename: '{filename}' ")
         while not self.zs_api.progress:
             time.sleep(0.1)
         with tqdm(
