@@ -515,6 +515,7 @@ class ZSpotify:
         audio_format = self.args.audio_format
         audio_number = track['audio_number']
         artist_name = track['artist_name']
+        album_artist = track['album_artist']
         album_name = track['album_name']
 
         # Sanitize and set full path once
@@ -562,6 +563,7 @@ class ZSpotify:
                             release_year=track['release_year'],
                             disc_number=track['disc_number'],
                             track_number=audio_number,
+                            album_artist=album_artist,
                             track_id_str=track['scraped_song_id'],
                             image_url=track['image_url'])
         print(f"Finished downloading {filename}")
