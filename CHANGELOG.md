@@ -1,5 +1,9 @@
 # Changelog
 
+**v2.0.6 (31 Aug 2023)**
+- added singles to downloads 
+- fix artist albums tag for plex  
+
 **v2.0.5 (22 May 2023)**
 - Fixed issue caused by filenames being too long / Screeper
 
