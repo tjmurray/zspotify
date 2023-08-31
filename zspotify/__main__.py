@@ -452,7 +452,7 @@ class ZSpotify:
     # DOWNLOADERS
 
     def generate_filename(self, caller, audio_name, audio_number, audio_format, artist_name, album_name, path=None):
-        def shorten_filename(filename, artist_name, audio_name, max_length=50):
+        def shorten_filename(filename, artist_name, audio_name, max_length=255):
             if len(filename) > max_length:
                 if len(artist_name) > (max_length // 2):
                     filename = filename.replace(artist_name, "Various Artists")
