@@ -577,8 +577,8 @@ class ZSpotify:
         playlist_name = playlist['name']
         if playlist_name == "":
             playlist_name = playlist_id
-        print(f"Downloading {playlist_id} playlist")
-        basepath = self.music_dir / self.sanitize_data(playlist_id)
+        print(f"Downloading {playlist_name} playlist")
+        basepath = self.music_dir / self.sanitize_data(playlist_name)
         for song in songs:
             self.download_track(song['id'], basepath, "playlist")
         print(f"Finished downloading {playlist['name']} playlist")
