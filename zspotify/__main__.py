@@ -23,7 +23,6 @@ _ANTI_BAN_WAIT_TIME = os.environ.get('ANTI_BAN_WAIT_TIME', 5)
 _ANTI_BAN_WAIT_TIME_ALBUMS = os.environ.get('ANTI_BAN_WAIT_TIME_ALBUMS', 30)
 _LIMIT_RESULTS = os.environ.get('LIMIT_RESULTS', 10)
 
-
 try:
     __version__ = metadata.version("zspotify")
 except metadata.PackageNotFoundError:
@@ -144,7 +143,7 @@ class ZSpotify:
         self.antiban_album_time = self.args.antiban_album
         self.not_skip_existing = self.args.not_skip_existing
         self.skip_downloaded = self.args.skip_downloaded
-        self.archive_file = self.args.config_dir / self.args.archive
+        self.archive_file = self.config_dir / self.args.archive
         self.archive = Archive(self.archive_file)
 
     def parse_args(self):
@@ -295,6 +294,7 @@ class ZSpotify:
                 "\rWait for Next Download in %d second(s)..." %
                 (i + 1), end="")
             time.sleep(1)
+        print("\n")
 
     def sanitize_data(self, value):
         """Returns given string with problematic removed"""
@@ -450,6 +450,52 @@ class ZSpotify:
                 print(f"Migration complete from: {str(old_archive_path)}")
 
     # DOWNLOADERS
+
+    def generate_filename(self, caller, audio_name, audio_number, audio_format, artist_name, album_name, path=None):
+        def shorten_filename(filename, artist_name, audio_name, max_length=50):
+            if len(filename) > max_length:
+                if len(artist_name) > (max_length // 2):
+                    filename = filename.replace(artist_name, "Various Artists")
+                else:
+                    excess_length = len(filename) - max_length
+                    truncated_audio_name = audio_name[:-excess_length]
+                    filename = filename.replace(audio_name, truncated_audio_name)
+
+            return filename
+
+        if caller == "album":
+            base_path = path or self.music_dir
+            filename = f"{audio_number}. {audio_name}.{audio_format}"
+
+            if self.album_in_filename:
+                filename = f"{album_name} " + filename
+
+        elif caller == "playlist":
+            base_path = path or self.music_dir
+            filename = f"{audio_name}.{audio_format}"
+
+            if self.album_in_filename:
+                filename = f"{album_name} - " + filename
+            filename = f"{artist_name} - " + filename
+
+        elif caller == "show":
+            base_path = path or self.episodes_dir
+            filename = f"{audio_number}. {audio_name}.{audio_format}"
+
+        elif caller == "episode":
+            base_path = path or self.episodes_dir
+            filename = f"{artist_name} - {audio_number}. {audio_name}.{audio_format}"
+
+        else:
+            base_path = path or self.music_dir
+            filename = f"{artist_name} - {audio_name}.{audio_format}"
+
+        filename = shorten_filename(filename, artist_name, audio_name)
+        filename = self.sanitize_data(filename)
+        fullpath = base_path / filename
+
+        return fullpath, filename
+
     def download_track(self, track_id, path=None, caller=None):
         if self.args.skip_downloaded and self.archive.exists(track_id):
             print(f"Skipping {track_id} - Already Downloaded")
@@ -469,40 +515,12 @@ class ZSpotify:
         audio_format = self.args.audio_format
         audio_number = track['audio_number']
         artist_name = track['artist_name']
+        album_artist = track['album_artist']
         album_name = track['album_name']
 
-        if caller == "album":
-            basepath = path or self.music_dir
-            filename = f"{audio_number}. {audio_name}.{audio_format}"
-
-            # Add album name to filename
-            if self.album_in_filename:
-                filename = f"{album_name} " + filename
-
-        elif caller == "playlist":
-            basepath = path or self.music_dir
-            filename = f"{audio_name}.{audio_format}"
-
-            # Add album name to filename
-            if self.album_in_filename:
-                filename = f"{album_name} - " + filename
-            filename = f"{artist_name} - " + filename
-
-        elif caller == "show":
-            basepath = path or self.episodes_dir
-            filename = f"{audio_number}. {audio_name}.{audio_format}"
-
-        elif caller == "episode":
-            basepath = path or self.episodes_dir
-            filename = f"{artist_name} - {audio_number}. {audio_name}.{audio_format}"
-
-        else:
-            basepath = path or self.music_dir
-            filename = f"{artist_name} - {audio_name}.{audio_format}"
-
         # Sanitize and set full path once
-        filename = self.sanitize_data(filename)
-        fullpath = basepath / filename
+        fullpath, filename = self.generate_filename(caller, audio_name, audio_number, audio_format, artist_name,
+                                                    album_name, path)
 
         if self.not_skip_existing and fullpath.exists():
             print(f"Skipping {filename} - Already downloaded")
@@ -511,7 +529,7 @@ class ZSpotify:
             Thread(target=self.zs_api.download_audio,
                    args=(track_id, fullpath, True))
         downloader.start()
-
+    
         while not self.zs_api.progress:
             time.sleep(0.1)
         with tqdm(
@@ -542,6 +560,7 @@ class ZSpotify:
                             release_year=track['release_year'],
                             disc_number=track['disc_number'],
                             track_number=audio_number,
+                            album_artist=album_artist,
                             track_id_str=track['scraped_song_id'],
                             image_url=track['image_url'])
         print(f"Finished downloading {filename}")
@@ -555,8 +574,11 @@ class ZSpotify:
         if not songs:
             print("Playlist is empty")
             return False
-        print(f"Downloading {playlist['name']} playlist")
-        basepath = self.music_dir / self.sanitize_data(playlist['name'])
+        playlist_name = playlist['name']
+        if playlist_name == "":
+            playlist_name = playlist_id
+        print(f"Downloading {playlist_name} playlist")
+        basepath = self.music_dir / self.sanitize_data(playlist_name)
         for song in songs:
             self.download_track(song['id'], basepath, "playlist")
         print(f"Finished downloading {playlist['name']} playlist")
@@ -734,6 +756,9 @@ class ZSpotify:
             Thread(target=self.zs_api.download_audio,
                    args=(episode_id, fullpath, True))
         downloader.start()
+
+        _filename = filename[:50]
+        filename = _filename
 
         while not self.zs_api.progress:
             time.sleep(0.1)

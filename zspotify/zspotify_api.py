@@ -105,6 +105,9 @@ class ZSpotifyApi:
             raise RuntimeError(except_msg)
 
     def parse_url(self, search_input):
+        pattern = r'intl-[^/]+/'
+        search_input = re.sub(pattern, '', search_input)
+
         track_uri_search = re.search(
             r"^spotify:track:(?P<TrackID>[0-9a-zA-Z]{22})$", search_input
         )
@@ -267,6 +270,7 @@ class ZSpotifyApi:
             for data in info["tracks"][0]["artists"]:
                 artists.append(data["name"])
             artist_name = artists
+            album_artist = info["tracks"][0]["album"]["artists"][0]['name']
             album_name = info["tracks"][0]["album"]["name"]
             song_name = info["tracks"][0]["name"]
             image_url = info["tracks"][0]["album"]["images"][img_index]["url"] if img_index >= 0 else None
@@ -281,6 +285,7 @@ class ZSpotifyApi:
                 return {'id': track_id,
                         'artist_id': artist_id,
                         'artist_name': self.conv_artist_format(artist_name),
+                        'album_artist': album_artist,
                         'album_name': album_name,
                         'audio_name': song_name,
                         'image_url': image_url,
@@ -295,6 +300,7 @@ class ZSpotifyApi:
             return {'id': track_id,
                     'artist_id': artist_id,
                     'artist_name': self.conv_artist_format(artist_name),
+                    'album_artist': album_artist,
                     'album_name': album_name,
                     'audio_name': song_name,
                     'image_url': image_url,
@@ -423,7 +429,7 @@ class ZSpotifyApi:
 
         offset = 0
         limit = 50
-        include_groups = "album,compilation"
+        include_groups = "album,compilation,single"
 
         albums = []
         resp = self.authorized_get_request(
